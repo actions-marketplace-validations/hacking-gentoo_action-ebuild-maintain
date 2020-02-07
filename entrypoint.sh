@@ -57,6 +57,9 @@ echo "Located ebuild at ${ebuild_path}"
 echo "  in category ${ebuild_cat}"
 echo "    for ${ebuild_pkg}"
 
+# Configure ssh
+configure_ssh "${INPUT_DEPLOY_KEY}"
+
 # Configure git
 configure_git "${GITHUB_ACTOR}"
 
