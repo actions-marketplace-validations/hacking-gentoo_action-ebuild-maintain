@@ -100,5 +100,23 @@ while read -r ebuild_file; do
 	fi
 done < <(find "${ebuild_cat}/${ebuild_pkg}/" -name "*.ebuild" | grep -v ".*9999\.ebuild" | sort -Vr)
 
+# Add it to git
+git_add_files
+
+# Check it with repoman
+repoman_check
+
+# Commit the new ebuild.
+git_commit "Automated update of ${ebuild_cat}/${ebuild_pkg} keywords"
+
+# Push git repo branch
+git_push "${overlay_branch}"
+
+# Create a pull request
+if [[ -n "${INPUT_AUTH_TOKEN}" ]]; then
+	title="Automated update of ${ebuild_cat}/${ebuild_pkg}"
+	msg="Automatically generated pull request to update overlay for new keywords for ${ebuild_cat}/${ebuild_pkg}"
+	create_pull_request "${overlay_branch}" "master" "${title}" "${msg}" "false" 
+fi
 
 echo "------------------------------------------------------------------------------------------------------------------------"
