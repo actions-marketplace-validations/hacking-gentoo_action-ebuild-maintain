@@ -1,6 +1,6 @@
 # action-ebuild-keyword
 
-Automatically create an ebuild from a template and deploy it to a repository whenever a new package is released.
+Automatically update the KEYWORD variable for an ebuild based on the keywords of all dependencies.
 
 ## Functionality
 
