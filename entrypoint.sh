@@ -81,9 +81,22 @@ while read -r ebuild_file; do
 	ebuild_unstable=$(curl -s "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/tags/${ebuild_ver}" | jq '.prerelease')
 	
 	if [[ "${ebuild_unstable}" != "null" ]]; then
-		echo "Checking ebuild ${ebuild_file} - version ${ebuild_ver} - unstable = ${ebuild_unstable}"
+		echo -e "\nChecking ebuild ${ebuild_file} - version ${ebuild_ver} - unstable = ${ebuild_unstable}"
+		echo -e "\nkwtool b ${ebuild_cat}/${ebuild_pkg}-${ebuild_ver}::${repo_name}"
+		kwtool -N b "${ebuild_cat}/${ebuild_pkg}-${ebuild_ver}::${repo_name}"
+		new_keywords="$(kwtool b "${ebuild_cat}/${ebuild_pkg}-${ebuild_ver}")"
+		sed-or-die '^KEYWORDS.*' "KEYWORDS=\"${new_keywords}\"" "${ebuild_file}"
+		if [[ "${ebuild_unstable}" == "false" ]]; then
+			echo -e "\nUsing best KEYWORDS: ${new_keywords}"
+		else
+			new_keywords="$(unstable_keywords "${ebuild_file}")"
+			echo "Pre-release KEYWORDS: ${new_keywords}"
+			sed-or-die '^KEYWORDS.*' "KEYWORDS=\"${new_keywords}\"" "${ebuild_file}"
+		fi
+		ebuild "${ebuild_file}" manifest
 	else
 		echo "::warning ::Ebuild ${ebuild_file} - version ${ebuild_ver} - has no corresponding release"
+		echo
 	fi
 done < <(find "${ebuild_cat}/${ebuild_pkg}/" -name "*.ebuild" | grep -v ".*9999\.ebuild" | sort -Vr)
 
