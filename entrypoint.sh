@@ -44,6 +44,35 @@ cd "${GITHUB_WORKSPACE}" || exit 2
 # If there isn't a .gentoo directory in the base of the workspace then bail
 [[ -d .gentoo ]] || die "No .gentoo directory in workspace root"
 
+# Find the ebuild template and get its category, package and name
+ebuild_path=$(find_ebuild_template)
+ebuild_cat=$(get_ebuild_cat "${ebuild_path}")
+ebuild_pkg=$(get_ebuild_pkg "${ebuild_path}")
+
+# Calculate overlay branch name
+overlay_branch="${INPUT_OVERLAY_BRANCH:-${ebuild_cat}/${ebuild_pkg}}"
+
+# Display our findings thus far
+echo "Located ebuild at ${ebuild_path}"
+echo "  in category ${ebuild_cat}"
+echo "    for ${ebuild_pkg}"
+
+# Configure git
+configure_git "${GITHUB_ACTOR}"
+
+# Checkout the overlay (master).
+checkout_overlay_master "${INPUT_OVERLAY_REPO}"
+
+# Check out the branch or create a new one
+checkout_or_create_overlay_branch "${overlay_branch}"
+
+# Try to rebase.
+rebase_overlay_branch
+
+# Add the overlay to repos.conf
+repo_name="$(configure_overlay)"
+infomsg "Added overlay [${repo_name}] to repos.conf"
+
 
 
 echo "------------------------------------------------------------------------------------------------------------------------"
