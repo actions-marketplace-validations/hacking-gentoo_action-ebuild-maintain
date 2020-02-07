@@ -76,14 +76,16 @@ rebase_overlay_branch
 repo_name="$(configure_overlay)"
 infomsg "Added overlay [${repo_name}] to repos.conf"
 
-while read -r ebuild_ver; do
+while read -r ebuild_file; do
+	ebuild_ver=$(qatom -C -F'%{PV}' "${ebuild_file}")
 	ebuild_unstable=$(curl -s "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/tags/${ebuild_ver}" | jq '.prerelease')
+	
 	if [[ "${ebuild_unstable}" != "null" ]]; then
-		echo "Version ${ebuild_ver} - unstable = ${ebuild_unstable}"
+		echo "Checking ebuild ${ebuild_file} - version ${ebuild_ver} - unstable = ${ebuild_unstable}"
 	else
-		echo "::warning ::Ebuild version ${ebuild_ver} - has no corresponding release"
+		echo "::warning ::Ebuild ${ebuild_file} - version ${ebuild_ver} - has no corresponding release"
 	fi
-done < <(find "${ebuild_cat}/${ebuild_pkg}/" -name "*.ebuild" | grep -v ".*9999\.ebuild" | xargs -L1 qatom -C -F'%{PV}' | sort -Vr)
+done < <(find "${ebuild_cat}/${ebuild_pkg}/" -name "*.ebuild" | grep -v ".*9999\.ebuild" | sort -Vr)
 
 
 echo "------------------------------------------------------------------------------------------------------------------------"
