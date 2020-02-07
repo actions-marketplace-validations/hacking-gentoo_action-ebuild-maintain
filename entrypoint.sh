@@ -78,12 +78,12 @@ infomsg "Added overlay [${repo_name}] to repos.conf"
 
 while read -r ebuild_ver; do
 	ebuild_unstable=$(curl -s "https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/tags/${ebuild_ver}" | jq '.prerelease')
-	if [[ -n "${ebuild_unstable}" ]]; then
+	if [[ "${ebuild_unstable}" != "null" ]]; then
 		echo "Version ${ebuild_ver} - unstable = ${ebuild_unstable}"
 	else
 		echo "::warning ::Ebuild version ${ebuild_ver} - has no corresponding release"
 	fi
-done < <(find "${ebuild_cat}/${ebuild_pkg}/" -name "*.ebuild" | grep -v ".*9999\.ebuild" | xargs -L1 qatom -C -F%{PV} | sort -Vr)
+done < <(find "${ebuild_cat}/${ebuild_pkg}/" -name "*.ebuild" | grep -v ".*9999\.ebuild" | xargs -L1 qatom -C -F'%{PV}' | sort -Vr)
 
 
 echo "------------------------------------------------------------------------------------------------------------------------"
