@@ -115,7 +115,7 @@ if git_commit "Automated update of ${ebuild_cat}/${ebuild_pkg} keywords"; then
 	# Create a pull request
 	if [[ -n "${INPUT_AUTH_TOKEN}" ]]; then
 		title="Automated update of ${ebuild_cat}/${ebuild_pkg}"
-		msg="Automatically generated pull request to update overlay for new keywords for ${ebuild_cat}/${ebuild_pkg}"
+		msg="Automatically generated pull request to update overlay with new keywords for ${ebuild_cat}/${ebuild_pkg}"
 		create_pull_request "${overlay_branch}" "master" "${title}" "${msg}" "false" 
 	fi
 fi
