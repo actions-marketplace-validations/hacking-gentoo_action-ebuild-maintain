@@ -104,7 +104,7 @@ done < <(find "${ebuild_cat}/${ebuild_pkg}/" -name "*.ebuild" | grep -v ".*9999\
 git_add_files
 
 # Check it with repoman
-repoman_check
+repoman_check || echo "::warning ::Repoman checks failed"
 
 # Commit the new ebuild.
 if git_commit "Automated update of ${ebuild_cat}/${ebuild_pkg} keywords"; then
