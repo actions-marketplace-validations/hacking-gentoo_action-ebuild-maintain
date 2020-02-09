@@ -1,4 +1,4 @@
-name: 'action-ebuild-keyword'
+name: 'action-ebuild-maintain'
 description: 'Update KEYWORDs for an ebuild to the current best available'
 inputs:
   auth_token:

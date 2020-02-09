@@ -1,4 +1,4 @@
-# action-ebuild-keyword
+# action-ebuild-maintain
 
 Automatically update the KEYWORD variable for an ebuild based on the keywords of all dependencies.
 
