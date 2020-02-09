@@ -22,7 +22,7 @@ Before this action can be used [action-ebuild-release](https://github.com/hackin
 `.github/workflows/action-ebuild-keyword.yml`
 
 ```yaml
-name: Ebuild Keyword
+name: Ebuild Maintain
 
 on:
   repository_dispatch:
@@ -30,7 +30,7 @@ on:
     - cron: "0 6 * * 1"
 
 jobs:
-  action-ebuild-keyword:
+  action-ebuild-maintain:
     runs-on: ubuntu-latest
     steps:
     # Check out the repository
@@ -56,7 +56,7 @@ jobs:
           distfiles
 
     # Run the ebuild keyword action
-    - uses: hacking-gentoo/action-ebuild-keyword@next
+    - uses: hacking-gentoo/action-ebuild-maintain@next
       with:
         auth_token: ${{ secrets.PR_TOKEN }}
         deploy_key: ${{ secrets.DEPLOY_KEY }}
